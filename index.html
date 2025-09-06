@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+    </head>
+    <body>
+        <button id="buyCryptoBtn">Pay $7.99 in ETH</button>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.8.0/dist/ethers.umd.min.js"></script>
+<script>
+const priceETH = 0.003; // approx $7.99 in ETH, update live if needed
+const receiverAddress = "0x9C989339d9072E35ca5857f811Ea58F2ba1b2B0F"; // your ETH wallet
+
+document.getElementById("buyCryptoBtn").addEventListener("click", async () => {
+    if(!window.ethereum){
+        alert("Install MetaMask to pay bro!");
+        return;
+    }
+    
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = await provider.getSigner();
+
+    try {
+        const tx = await signer.sendTransaction({
+            to: receiverAddress,
+            value: ethers.parseEther(priceETH.toString())
+        });
+        alert("Payment sent! Tx Hash: " + tx.hash);
+    } catch(e) {
+        console.error(e);
+        alert("Payment failed bro 😭");
+    }
+});
+</script>
+    </body>
+</html>
